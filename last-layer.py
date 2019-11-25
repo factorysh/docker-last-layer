@@ -9,14 +9,13 @@ for container in client.containers.list(ignore_removed=True):
     if diffs is None:
         continue
     container.reload()
-    print("\t", container.attrs['GraphDriver']['Data'])
+    print("\t", container.attrs['GraphDriver']['Data']['UpperDir'])
     volumes = set(m['Destination'] for m in container.attrs['Mounts'] if m['Type'] == 'bind')
-    print("\t", volumes)
+    #print("\t", volumes)
     for diff in diffs:
-        if diff['Kind'] != 1: # not a file ?
+        if diff['Kind'] != 1: # FIXME What is kind ?
             continue
-        if diff['Path'] in volumes:
+        if diff['Path'] in volumes: # it's in a volume
             continue
-        print("\t", diff['Path'])
-
+        print("\t\t", diff['Path'])
 

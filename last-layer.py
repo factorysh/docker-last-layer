@@ -10,9 +10,13 @@ for container in client.containers.list(ignore_removed=True):
         continue
     container.reload()
     print("\t", container.attrs['GraphDriver']['Data'])
-    volumes = [m['Destination'] for m in container.attrs['Mounts'] if m['Type'] == 'bind']
+    volumes = set(m['Destination'] for m in container.attrs['Mounts'] if m['Type'] == 'bind')
     print("\t", volumes)
     for diff in diffs:
-        print("\t", diff)
+        if diff['Kind'] != 1: # not a file ?
+            continue
+        if diff['Path'] in volumes:
+            continue
+        print("\t", diff['Path'])
 
 
